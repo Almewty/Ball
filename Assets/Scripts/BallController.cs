@@ -5,11 +5,14 @@ public class BallController : MonoBehaviour {
 
 	public float speed;
 	public float sleepVelocity;
+	public float jumpForce;
 
 	private Rigidbody rb;
+	private bool isGrounded;
 
 	// Use this for initialization
 	void Start () {
+		isGrounded = false;
 		rb = GetComponent<Rigidbody>();
 	}
 	
@@ -25,9 +28,28 @@ public class BallController : MonoBehaviour {
 		else
 			rb.AddForce(movement * speed);
 
-		if (Input.GetButton("Jump"))
+		if (Input.GetButton("Jump") && isGrounded)
 		{
-			rb.AddForce(0f, 100f, 0f);
+			rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+			rb.AddForce(Vector3.up * jumpForce);
 		}
+	}
+
+	void OnCollisionEnter(Collision collision)
+	{
+		if (collision.gameObject.tag == "Floor")
+			isGrounded = true;
+	}
+	
+	void OnCollisionStay(Collision collision)
+	{
+		if (collision.gameObject.tag == "Floor")
+			isGrounded = true;
+	}
+
+	void OnCollisionExit(Collision collision)
+	{
+		if (collision.gameObject.tag == "Floor")
+			isGrounded = false;
 	}
 }
