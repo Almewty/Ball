@@ -33,8 +33,13 @@ public class BallController : MonoBehaviour {
 			rb.velocity = Vector3.zero;
 		}
 		else
-			rb.AddForce(Quaternion.FromToRotation(Vector3.forward, camera.transform.forward) * movement * speed);
+		{
+			var cameraForward = camera.transform.forward;
+			cameraForward.y = 0;
+			cameraForward = cameraForward.normalized;
+			rb.AddForce(Quaternion.FromToRotation(Vector3.forward, cameraForward) * movement * speed);
 
+		}
 		if (Input.GetButton("Jump") && isGrounded)
 		{
 			rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
